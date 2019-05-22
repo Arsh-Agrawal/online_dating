@@ -1,38 +1,49 @@
 const path = require('path');
+
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+users = [];
+connections = [];
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
-
 const config = require('config');
-
 const session = require('express-session');
 const passport = require('passport');
-
 const response = require('./utils/response');
 const routes = require('./routes');
-
 const app = express();
-app.set("view options", {layout: false});
-app.use(express.static(__dirname + '/public'));
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
 
 require('./config/passport')(passport);
 
-// app.use(session({secret: config.get('SESSION_SECRET_KEY')}));
+app.set("view options", {layout: false});
 
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(response);
-
+// app.use(io);
+// app.use(users);
+// app.use(connection);
 app.use('/', routes);
 
-//port working on ./bin/wwww
+const port = process.env.PORT || 3000;
 
-// const port = process.env.PORT || 3000;
+server.listen(port, err => {
+    console.log(err || 'Listening on port ' + port);
+});
 
-// app.listen(port, err => {
-//     console.log(err || 'Listening on port ' + port);
-// });
 
-module.exports = app;
+io.sockets.on('connection', function(socket)
+{
+	//new connection
+
+	connections.push(socket);
+	console.log('Connected: %s sockets connected', connections.length );
+
+	//disconnect
+	connections.splice(connections.indexOf(socket),1);
+	console.log('Disconnected: %s sockets connected', connections.length);
+})
