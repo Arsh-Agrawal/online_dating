@@ -60,8 +60,8 @@ io.sockets.on('connection', function(socket)
 	//send messages
 
 	socket.on('send message', function(data){
-		console.log(data);
-		io.sockets.emit('new messsage', {msg:data});
+		// console.log(data);
+		io.sockets.emit('new_message', {msg:data});
 	});
 
 	

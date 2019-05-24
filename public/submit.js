@@ -10,8 +10,8 @@ $(function(){
 		$message.val('');
 	});
 
-	socket.on('new message',function(data){
-		console.log(data.msg);
+	socket.on('new_message',function(data){
+		// console.log(data.msg);
 		$chat.append('<div class = "well">'+data.msg+'</div>');
 	});
 });
