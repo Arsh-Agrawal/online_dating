@@ -1,8 +1,7 @@
 const path = require('path');
 
-require('dotenv').config({ path: path.join(__dirname, '.env') });
-users = [];
-connections = [];
+// require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 
 
 const express = require('express');
@@ -12,6 +11,7 @@ const session = require('express-session');
 const passport = require('passport');
 const response = require('./utils/response');
 const routes = require('./routes');
+const sockets = require('./sockets/socket.js');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
@@ -27,9 +27,18 @@ app.use(response);
 // app.use(io);
 // app.use(users);
 // app.use(connection);
-// app.use('/', routes);
+app.use('/', routes);
+// app.use('/',sockets);
+
+
 
 const port = process.env.PORT || 3000;
+
+
+// var server = app.listen(port, err => {
+//     console.log(err || 'Listening on port ' + port);
+// });
+
 
 // server.listen(port, err => {
 //     console.log(err || 'Listening on port ' + port);
@@ -38,14 +47,18 @@ const port = process.env.PORT || 3000;
 server.listen(port);
 console.log('Listening on port ' + port);
 
-app.get('/', function(req, res) {
-  res.sendFile( path.join(__dirname + 'index.html'));
-});
+// module.exports = io;
+
+// app.get('/', function(req, res) {
+//   res.sendFile( path.join(__dirname + 'index.html'));
+// });
+
+
 
 io.sockets.on('connection', function(socket)
 {
 	//new connection
-	
+	// console.log(io);
 	connections.push(socket);
 	console.log('Connected: %s sockets connected', connections.length );
 
@@ -66,3 +79,6 @@ io.sockets.on('connection', function(socket)
 
 	
 });
+
+// exports.module = server;
+
