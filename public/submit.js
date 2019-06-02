@@ -4,18 +4,43 @@ $(function(){
 	var $message = $('#message');
 	var $chat = $('#chat');
 
+	var $messageArea = $('#messageArea');
+	var $userForm = $('#userForm');
+	var $userFormArea = $('#userFormArea');
+	var $users = $('#users');
+	var $username = $('#username');
 
 
 	$messageForm.submit(function(e){
 		e.preventDefault();
 		socket.emit('send message',$message.val());
 		$message.val('');
-		// $.post('http://localhost:3000/'); 
 	});
 
 	socket.on('new_message',function(data){
 		// console.log(data.msg);
-		$chat.append('<div class = "well">'+data.msg+'</div>');
+		$chat.append('<div class = "well"><strong>'+data.user+'</strong>: '+data.msg+'</div>');
+	});
+
+	$userForm.submit(function(e){
+		e.preventDefault();
+		socket.emit('new user',$username.val(),function(data){
+			if(data)
+			{
+				$userFormArea.hide();
+				$messageArea.show();
+			}
+		});
+		$username.val('');
+	});
+
+	socket.on('get_users',function(data){
+		var html = '';
+		for(i = 0 ; i< data.length ; i++)
+		{
+			html += '<li class = "list-group-item">'+data[i]+'</li>';
+		}
+		$users.html(html);
 	});
 });
 

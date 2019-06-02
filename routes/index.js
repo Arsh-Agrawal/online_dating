@@ -8,7 +8,8 @@ router.get('/', function(req, res,next) {
 });
 
 router.post('/',function(req,res,next) {
-	chat.online_chat();
+	chat.online_chat(req,res);
+	res.sendFile( __dirname + 'index.html');
 	next();
 });
 
